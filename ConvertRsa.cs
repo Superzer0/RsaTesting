@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ConsoleApp1
 {
@@ -52,6 +56,23 @@ namespace ConsoleApp1
             return buffer.ToString();
         }
 
+        public static string FromCertificatePemToPkcs8Pem(string certificatePemPath)
+        {
+            var cert = X509Certificate2.CreateFromPem(File.ReadAllText(certificatePemPath));
+            var rsaKey = cert.PublicKey.GetRSAPublicKey();
+
+            // X509Certificate2.CreateFromPemFile() use this for loading a private key and certificate info
+
+            var buffer = new StringBuilder();
+            buffer.AppendLine("-----BEGIN PUBLIC KEY-----");
+            buffer.AppendLine(System.Convert.ToBase64String(
+                cert.PublicKey.ExportSubjectPublicKeyInfo(),
+                Base64FormattingOptions.InsertLineBreaks));
+            buffer.AppendLine("-----END PUBLIC KEY-----");
+
+            return buffer.ToString();
+        }
+        
         public static void WriteToConsole(string input, Func<string, string> convert)
         {
             var output = convert(input);

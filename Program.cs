@@ -1,12 +1,15 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Security.Claims;
+
 using ConsoleApp1;
+using Newtonsoft.Json;
 
 
 Console.WriteLine("");
 
 var rsaPublicKeyPkcs1 =
-    "MIIBCgKCAQEAx2fQatW9pxi0rM3nJYZ1BQB5WOVppsiR8ivcT9MChxM4V1KijYMn2xAZ/6UhRu/m2HKkJjVAVofmzbLlGvIVjd2lNAyMTV7srR1eQ+kwM+kXBeW5exAoB7k/KttKMkk4Gi7rMSxOxHbV44SQS+10LzgEhJ6sAbihrXzbplTLrW+bkp1Mkl1UB+NnHCwe3af+PZvUOQrrI4MyrBsUtvH3OBVaCy16D4BjWBeUF3MZa002vPRZR2JpJpSCmkNTsykYFFJKqE3m+rQgLtDzwP+qvVqS7Ds5mNypgWEuTzdPSyZJGlsC0JFxRwjhtNbcpA49dQ8H50cRCH1butN22oVTLQIDAQAB";
+    "MIIFUTCCAzmgAwIBAgIQS4sXwlVPRr+eyKm2FVufqTANBgkqhkiG9w0BAQsFADAXMRUwEwYDVQQDEwxsZWFwd29yay5kZXYwHhcNMjIxMTE2MTMyMjM1WhcNMjMxMTE2MTMzMjM1WjAXMRUwEwYDVQQDEwxsZWFwd29yay5kZXYwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDm21v/UvVbw//h7EAbd8W1KLfZS4wvlW35jNH/r3TCcHaqx4iu52RRh/DN0ip/a+oLdQPp+k/bvmFECs3I9RRyar2AFLwV1/2O+GBUo0cWrE5V5v7ztK0jjrWc4AHqGLX6tzWkuJvKGBssKPYIVOF27U81sVjqMuVBqskU2vidYYOb0zLmbpRRd1M18Qt9K/mwu3MUXFhvTEnO+dp/Fxg27nK2HApJzt7dCCwd+LrZxH+mkVVfClysMG1ZHW4MHp3JwoWPb2swScgYOicV4kaaOOnuoXy1InWckxUc2Ft1bXUDVCPmoT1DVq9em+PwXtTTEMUcKsSVDZ2qYunF79fnYi8+b3lg2GYfH8Hy1j18LxD2+lAlIyyufn59YagasFILWGXFoXJ/BpE1Mdevd3M5Uw8Lft/aIH3MPFylIXyybOJrdagMf1c0k0V/TNTzeeNkz5iHiUSOLC3WYhHnrYCZ34huDEcRa1BH4g4P8a5W3S3QPyurmsfeUZ2sQdW5V+BHUqN9IdoCD7QqeihN8Cz8yIK+zqQnzq/a4sGQUapMG+Gk9OVLI5L7bHStzGV1B8J/RGvs82alxJu7GUoSZVIt7XHLAxX0dMbk1wiW88G3XvDl89mhGZvUUUrsDEUqGpcw5tNF1ZL3KE1d+Y6ae8w1VYSGHE0CXLAy/wN5B4FxUQIDAQABo4GYMIGVMA4GA1UdDwEB/wQEAwIFoDAJBgNVHRMEAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAZBgNVHREEEjAQgg4qLmxlYXB3b3JrLmRldjAfBgNVHSMEGDAWgBRcVi+R/bSXkwMs8SAKACWo0HlIODAdBgNVHQ4EFgQUXFYvkf20l5MDLPEgCgAlqNB5SDgwDQYJKoZIhvcNAQELBQADggIBADi2vU8I5temtDBDv0Nidppqm9pRhH2/LwVOb8XbrqQSg6KIQ+rTTtRPhV4rlm/95fAN96hHqSkUcxNpEpx0Gu7mZGxltBifRle4JoEi6t8aSNcfrKNIDqzeTD/px4N/c8txeemkfB0jnfSGV7iDzfHsP7dCjVsoyajYzzEGQQ0Q2Utp00Y06nlGI5GD+63LDE6NajxK8MAvuH1N9Xsr0BoG6OXsDhxO0LlirUJBNtvp0iSM5wGzenNCIloy0GlKcOzstuTCoEVU+LTxOJ7taXDkdu72cY/nllWrru0Kc+cHe+sexXMRaElBtCmLCkcDrwg82+DoN/8RrvXXcgI2rAXOObU/qTxMykBD5FF2uSxOunhLXRkmbnkFiPX3WEhjfWXKGmoQd3QqgzCK9+s8TmiwZjlhxQS9j46SrvYFNVNEhebxa91Fcp5BGpBOqXLDtNYlY6Hyyqp23rlmNq2m3iHHl05qx4orQBo0hIBhCHH5pyCNbsxHWnNOcwJappeLwPZ4O090qP4si/28Ks85XjhYh1U+aki1EO4cFeqx03Bqwk+I4o+7JHWbTancfDx6PvbyYsS4bQYR6AYph1BOwmxQPR8lCv2pvXPa51qI5TxBNcV2V6s/TT7crTwoCffjkdCdpKBe6YiLrbZZX1kOxKT/lNGL5FJKOJdQMAEspT3s";
 
 var rsaPublicKeyPkcs1WithLineBreaks = @"MIIBCgKCAQEAx2fQatW9pxi0rM3nJYZ1BQB5WOVppsiR8ivcT9MChxM4V1KijYMn2xAZ/6UhRu/m
 2HKkJjVAVofmzbLlGvIVjd2lNAyMTV7srR1eQ+kwM+kXBeW5exAoB7k/KttKMkk4Gi7rMSxOxHbV
@@ -33,5 +36,18 @@ qE3m+rQgLtDzwP+qvVqS7Ds5mNypgWEuTzdPSyZJGlsC0JFxRwjhtNbcpA49dQ8H50cRCH1butN2
 2oVTLQIDAQAB
 -----END PUBLIC KEY-----";
 
-ConvertRsa.WriteToConsole(rsaPublicKeyPkcs1, ConvertRsa.FromPublicPkcs1ToPkcs8Pem);
-ConvertRsa.WriteToConsole(rsaPublicKeyPem, ConvertRsa.FromPublicPemToPkcs8Pem);
+// ConvertRsa.WriteToConsole(rsaPublicKeyPkcs1, ConvertRsa.FromPublicPkcs1ToPkcs8Pem);
+// ConvertRsa.WriteToConsole(rsaPublicKeyPem, ConvertRsa.FromPublicPemToPkcs8Pem);
+ConvertRsa.WriteToConsole("./crt/self-signed-cert.cer", ConvertRsa.FromCertificatePemToPkcs8Pem);
+
+
+var token = RsaTokens.GenerateAccessToken(new List<Claim>()
+{
+    new Claim("kid", "myKey")
+}, "./crt/self-signed-cert.key.pem");
+
+Console.WriteLine("Token");
+Console.WriteLine(token);
+
+var validationSuccess = RsaTokens.ValidateToken(token, "./crt/self-signed-cert.cer");
+Console.WriteLine($"Validation result: {validationSuccess}");
