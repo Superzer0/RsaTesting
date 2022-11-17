@@ -1,19 +1,16 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ConsoleApp1
 {
     internal static class ConvertRsa
     {
         // PKCS#1 format
-        public static string FromPemToPkcs1Pem(string publicKey)
+        public static string FromPemToPkcs1Pem(string key)
         {
             var rsaPublicKey = RSA.Create();
-            rsaPublicKey.ImportFromPem(publicKey);
+            rsaPublicKey.ImportFromPem(key);
 
             var buffer = new StringBuilder();
             buffer.AppendLine("-----BEGIN RSA PUBLIC KEY-----");
@@ -25,10 +22,10 @@ namespace ConsoleApp1
             return buffer.ToString();
         }
 
-        public static string FromPublicPemToPkcs8Pem(string publicKey)
+        public static string FromPublicPemToPkcs8Pem(string key)
         {
             var rsaPublicKey = RSA.Create();
-            rsaPublicKey.ImportFromPem(publicKey);
+            rsaPublicKey.ImportFromPem(key);
 
             var buffer = new StringBuilder();
             buffer.AppendLine("-----BEGIN PUBLIC KEY-----");
@@ -40,11 +37,43 @@ namespace ConsoleApp1
             return buffer.ToString();
         }
 
-        // PKCS#8 format
-        public static string FromPublicPkcs1ToPkcs8Pem(string publicKey)
+
+        public static string FromPublicPkcs8ToPkcs1Pem(string key)
         {
             var rsaPublicKey = RSA.Create();
-            rsaPublicKey.ImportRSAPublicKey(System.Convert.FromBase64String(publicKey), out _);
+            rsaPublicKey.ImportSubjectPublicKeyInfo(System.Convert.FromBase64String(key), out _);
+
+            var buffer = new StringBuilder();
+            buffer.AppendLine("-----BEGIN RSA PUBLIC KEY-----");
+            buffer.AppendLine(System.Convert.ToBase64String(
+                rsaPublicKey.ExportRSAPublicKey(),
+                Base64FormattingOptions.InsertLineBreaks));
+            buffer.AppendLine("-----END RSA PUBLIC KEY-----");
+
+            return buffer.ToString();
+        }
+
+
+        public static string FromPrivatePkcs8ToPkcs1Pem(string key)
+        {
+            var rsaPublicKey = RSA.Create();
+            rsaPublicKey.ImportPkcs8PrivateKey(System.Convert.FromBase64String(key), out _);
+
+            var buffer = new StringBuilder();
+            buffer.AppendLine("-----BEGIN RSA PRIVATE KEY-----");
+            buffer.AppendLine(System.Convert.ToBase64String(
+                rsaPublicKey.ExportRSAPrivateKey(),
+                Base64FormattingOptions.InsertLineBreaks));
+            buffer.AppendLine("-----END RSA PRIVATE KEY-----");
+
+            return buffer.ToString();
+        }
+
+        // PKCS#8 format
+        public static string FromPublicPkcs1ToPkcs8Pem(string key)
+        {
+            var rsaPublicKey = RSA.Create();
+            rsaPublicKey.ImportRSAPublicKey(System.Convert.FromBase64String(key), out _);
 
             var buffer = new StringBuilder();
             buffer.AppendLine("-----BEGIN PUBLIC KEY-----");
