@@ -3,16 +3,11 @@
 using System.Security.Claims;
 
 using ConsoleApp1;
-using Newtonsoft.Json;
-
-
-
-
 
 Console.WriteLine("");
 
 var rsaPublicKeyPkcs1 =
-    "MIIBCgKCAQEAwOhfpWqkZoTfBwt8nt9xBVpV+803Z8ueW5mkSKoFdxCFs7iDM8UdtfjA1g3GOdNa9ds2TvA/IdA8JfIQyS0psdW/BpLs2ZjZx4NyN3PU6lMXQRHmEtutJzwS5ZcemGe7RpTz2PGTijO/WmsOyAml3T7HqFYlQOUy38TQhogDpKkY43yysJJkNYSIFciM6hVH1wF6sQzkAdz8jn/9yOH+liLIx9ujwovgGbjQUsbEgYWCl/8a1cY9+iFWxkkwiDirm4q/nioYgNFWPr4v+UXDNJZKimMMv2WvSOOktnbzCc6NQq81KGwQjCpLJTDiel2+wQ9o6lVtca1UjbWSCIe23wIDAQAB";
+    "MIIBCgKCAQEAx2fQatW9pxi0rM3nJYZ1BQB5WOVppsiR8ivcT9MChxM4V1KijYMn2xAZ/6UhRu/m2HKkJjVAVofmzbLlGvIVjd2lNAyMTV7srR1eQ+kwM+kXBeW5exAoB7k/KttKMkk4Gi7rMSxOxHbV44SQS+10LzgEhJ6sAbihrXzbplTLrW+bkp1Mkl1UB+NnHCwe3af+PZvUOQrrI4MyrBsUtvH3OBVaCy16D4BjWBeUF3MZa002vPRZR2JpJpSCmkNTsykYFFJKqE3m+rQgLtDzwP+qvVqS7Ds5mNypgWEuTzdPSyZJGlsC0JFxRwjhtNbcpA49dQ8H50cRCH1butN22oVTLQIDAQAB";
 
 var publicKeyNoLineBreaks =
     "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwsQMBdgSl+U7F+Fm++ylUrf3O7kfwVFdVcYdNbCwug5+XmqT0+d8Xs0IlYoDB0Pk6GdGU08gwQPio4XDSBJr/kvfN8n8TGGcqSrkOqmiih87G+lIpuRUNfxr7c9TjudnPiA/AoVqw18MKRzVf+QRWnsp9tyfswMaWexRJKq5pysnWl04iobsh6zsUQolcuPCwg+iuX41OENORHBPdC/a0QNO8AR0k00Jc2Xj7hJ3OTtJteFofmPIbCkTQH1wSGAo3VLUvN6QSBngpwrNfpPLEhMcvMyJlz6DolLk0BKsvhwj7Vu1CnXLZG282ov/7VUmVC/qI1w/5YjT1W1AROG4xQIDAQAB";
@@ -33,22 +28,18 @@ Cy16D4BjWBeUF3MZa002vPRZR2JpJpSCmkNTsykYFFJKqE3m+rQgLtDzwP+qvVqS7Ds5mNypgWEu
 TzdPSyZJGlsC0JFxRwjhtNbcpA49dQ8H50cRCH1butN22oVTLQIDAQAB
 -----END RSA PUBLIC KEY-----";
 
+var privateKeyPkcs1 = "";
+
 // rsaPublicKey and rsaPublicKey are the same (line breaks are allowed) but PEM header is not allowed -----END RSA PUBLIC KEY-----
 
-var pubPemFormat = @"-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx2fQatW9pxi0rM3nJYZ1BQB5WOVppsiR
-8ivcT9MChxM4V1KijYMn2xAZ/6UhRu/m2HKkJjVAVofmzbLlGvIVjd2lNAyMTV7srR1eQ+kwM+kX
-BeW5exAoB7k/KttKMkk4Gi7rMSxOxHbV44SQS+10LzgEhJ6sAbihrXzbplTLrW+bkp1Mkl1UB+Nn
-HCwe3af+PZvUOQrrI4MyrBsUtvH3OBVaCy16D4BjWBeUF3MZa002vPRZR2JpJpSCmkNTsykYFFJK
-qE3m+rQgLtDzwP+qvVqS7Ds5mNypgWEuTzdPSyZJGlsC0JFxRwjhtNbcpA49dQ8H50cRCH1butN2
-2oVTLQIDAQAB
------END PUBLIC KEY-----";
+var pubPemFormat = @"-----BEGIN PUBLIC KEY-----MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAvYie9Fo6llLb5Ye2qetTFhfF+mL8ArZCJpYHucjuQXnDD/sBLvKkVjaQd8AK8uICKejr92e8DRJAzWqHVWuhlB6udlpHeGz/QWi/UTA8/isIH5rwP4YZj6yHVi60CczyKQyh3ksIcq0pCguA3jhfhqhochnb7/9IYS9nps+oZ+l4KRT/wslO+ORuPYijx51RQci83wDnCzYBMDNdsbIGmxGIQedkbVMbAEuHHfbTU4yDM2uAs77HttPfpTpg2A4BSJ16SBJ8JDrdKxfyh4jBRVi1niJwtudJ6gQ8lP0jzH5ADCkq/nG+cr3NrY73VUVwpDyDNdPOH3vKd55rYJgMjaeYAToFb2EknWMOb1GjkEktVL6GgXR4+vitnZVY+tPs0aZULBuiuMViuBXazLglmWguOGgTrnHot93d5aXVsFZ11PphxJOVBgVqhTseJXkpSoGR1WRrqHtSrCC/UoH5AJEz4GhwW5zTyAM5izGdhEq4o3HoIIgiTh1M4MWnYLRGKvATz/uyP3As023LxGGPXXxO7u29SSwWBIXvo/1yM+aL6SixkzT6H+m13GRqOlBJf64ixUsVQrrhXQPS2yB+eh+PUdT1b9sx1z5NfgAzO/koEMwqz6TWIO+hQ1Z6dhmLdh9tg3e36TJ0BaRIiMdDw3jC6xX2/8qSDOhiiXPhfJUCAwEAAQ==-----END PUBLIC KEY-----";
 
+ConvertRsa.WriteToConsole(rsaPublicKeyPkcs1, ConvertRsa.FromPublicPkcs1ToPkcs8Pem);
+// ConvertRsa.WriteToConsole(pubPemFormat, ConvertRsa.FromPemToPkcs1Pem);
 // ConvertRsa.WriteToConsole(rsaPublicKeyPkcs1, ConvertRsa.FromPublicPkcs1ToPkcs8Pem);
- ConvertRsa.WriteToConsole(publicKeyNoLineBreaks, ConvertRsa.FromPublicPkcs8ToPkcs1Pem);
-//ConvertRsa.WriteToConsole("./crt/self-signed-cert.cer", ConvertRsa.FromCertificatePemToPkcs8Pem);
-ConvertRsa.WriteToConsole(privatePkcs8FormatNoLineBreaks, ConvertRsa.FromPrivatePkcs8ToPkcs1Pem);
-
+// ConvertRsa.WriteToConsole("./crt/self-signed-cert.cer", ConvertRsa.FromCertificatePemToPkcs8Pem);
+// ConvertRsa.WriteToConsole(privatePkcs8FormatNoLineBreaks, ConvertRsa.FromPrivatePkcs8ToPkcs1Pem);
+// ConvertRsa.WriteToConsole(privateKeyPkcs1, ConvertRsa.FromPrivatePkcs1ToPkcs8Pem);
 
 var token = RsaTokens.GenerateAccessToken(new List<Claim>()
 {

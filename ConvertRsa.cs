@@ -69,6 +69,21 @@ namespace ConsoleApp1
             return buffer.ToString();
         }
 
+        public static string FromPrivatePkcs1ToPkcs8Pem(string key)
+        {
+            var rsaPublicKey = RSA.Create();
+            rsaPublicKey.ImportRSAPrivateKey(System.Convert.FromBase64String(key), out _);
+
+            var buffer = new StringBuilder();
+            buffer.AppendLine("-----BEGIN PRIVATE KEY-----");
+            buffer.AppendLine(System.Convert.ToBase64String(
+                rsaPublicKey.ExportPkcs8PrivateKey(),
+                Base64FormattingOptions.InsertLineBreaks));
+            buffer.AppendLine("-----END PRIVATE KEY-----");
+
+            return buffer.ToString();
+        }
+
         // PKCS#8 format
         public static string FromPublicPkcs1ToPkcs8Pem(string key)
         {
